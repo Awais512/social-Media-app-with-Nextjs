@@ -7,6 +7,7 @@ import {
   TextArea,
   Divider,
 } from 'semantic-ui-react';
+import CommonInputs from '../components/Common/CommonInputs';
 import {
   HeaderMessage,
   FooterMessage,
@@ -33,6 +34,7 @@ function Signup() {
   const [usernameLoading, setUsernameLoading] = useState(false);
   const [usernameAvailable, setUsernameAvailable] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,6 +44,13 @@ function Signup() {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
   };
+
+  useEffect(() => {
+    const isUser = Object.values({ name, email, password, bio }).every((item) =>
+      Boolean(item)
+    );
+    isUser ? setSubmitDisabled(false) : setSubmitDisabled(true);
+  }, [user]);
 
   return (
     <>
@@ -121,6 +130,20 @@ function Signup() {
             iconPosition='left'
             required
             icon={usernameAvailable ? 'check' : 'close'}
+          />
+
+          <CommonInputs
+            user={user}
+            showSocialLinks={showSocialLinks}
+            setShowSocialLinks={setShowSocialLinks}
+            handleChange={handleChange}
+          />
+          <Divider hidden />
+          <Button
+            content='Sign Up'
+            type='submit'
+            color='orange'
+            disabled={submitDisabled || !usernameAvailable}
           />
         </Segment>
       </Form>
