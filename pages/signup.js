@@ -8,6 +8,7 @@ import {
   Divider,
 } from 'semantic-ui-react';
 import CommonInputs from '../components/Common/CommonInputs';
+import ImageDropDiv from '../components/Common/ImageDropDiv';
 import {
   HeaderMessage,
   FooterMessage,
@@ -35,13 +36,21 @@ function Signup() {
   const [usernameAvailable, setUsernameAvailable] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [media, setMedia] = useState(null);
+  const [mediaPreview, setMediaPreview] = useState(null);
+  const [highlighted, setHighlighted] = useState(false);
+  const inputRef = useRef();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
+    if (name === 'media') {
+      setMedia(files[0]);
+      setMediaPreview(URL.createObjectURL(files[0]));
+    }
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -68,6 +77,15 @@ function Signup() {
           onDismiss={() => setErrorMsg(null)}
         />
         <Segment>
+          <ImageDropDiv
+            highlighted={highlighted}
+            setHighlighted={setHighlighted}
+            handleChange={handleChange}
+            mediaPreview={mediaPreview}
+            setMediaPreview={setMediaPreview}
+            setMedia={setMedia}
+            inputRef={inputRef}
+          />
           <Form.Input
             label='Name'
             placeholder='Name'
